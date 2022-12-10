@@ -1,0 +1,20 @@
+name: Deploy Snapshot Artifacts
+description: Executes the Maven deploy goal
+inputs:
+  profiles:
+    description: Comma separated list of profiles to activate
+    required: false
+    default: ""
+  sha1:
+    description: The maven ci-friendly sha1 property to use
+    required: false
+  changelist:
+    description: The maven ci-friendly changelist property to use
+    required: false
+    default: -SNAPSHOT
+runs:
+  using: composite
+  steps:
+    - name: Deploy Snapshot Artifacts
+      shell: bash
+      run: ${{github.action_path}}/../scripts/ci-maven.sh -p "${{inputs.profiles}}" -g deploy -s "${{inputs.sha1}}" -c "${{inputs.changelist}}"

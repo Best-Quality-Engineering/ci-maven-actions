@@ -1,0 +1,21 @@
+name: Install
+description: Executes the Maven install goal
+inputs:
+  profiles:
+    description: Comma separated list of profiles to activate
+    required: false
+    default: ""
+  sha1:
+    description: The maven ci-friendly sha1 property to use
+    required: false
+    default: -${{github.run_id}}
+  changelist:
+    description: The maven ci-friendly changelist property to use
+    required: false
+    default: -SNAPSHOT
+runs:
+  using: composite
+  steps:
+    - name: Execute install
+      shell: bash
+      run: ${{github.action_path}}/../scripts/ci-maven.sh -p "${{inputs.profiles}}" -g install -s "${{inputs.sha1}}" -c "${{inputs.changelist}}"

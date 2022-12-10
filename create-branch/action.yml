@@ -1,0 +1,12 @@
+name: Create Branch
+description: Creates a new branch from the current branch
+inputs:
+  name:
+    description: The name of the branch
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Create new branch
+      shell: bash
+      run: git checkout -b "${{inputs.name}}"

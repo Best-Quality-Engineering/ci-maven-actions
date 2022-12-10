@@ -1,0 +1,18 @@
+name: Export Revision
+description: Exports the revision CI friendly property for all downstream actions
+inputs:
+  version:
+    description: The raw version string
+    required: true
+outputs:
+  revision:
+    description: The normalized revision
+    value: ${{steps.normalize-revision.outputs.revision}}
+runs:
+  using: composite
+  steps:
+    - id: normalize-revision
+      env:
+        RAW_VERSION: ${{inputs.version}}
+      shell: bash
+      run: echo "revision=${RAW_VERSION#v}" >> $GITHUB_OUTPUT

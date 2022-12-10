@@ -1,0 +1,19 @@
+name: Merge Release Branch
+description: Executes the merge release branch script
+inputs:
+  version:
+    description: The released version
+    required: true
+  release-branch:
+    description: The name of the release branch
+    required: true
+  base-branch:
+    description: The base branch into which the release branch will be merged
+    required: false
+    default: main
+runs:
+  using: composite
+  steps:
+    - name: Merge Release Branch
+      shell: bash
+      run: ${{github.action_path}}/../scripts/merge-release-branch.sh -v "${{inputs.version}}" -r "${{inputs.release-branch}}" -b "${{inputs.base-branch}}"

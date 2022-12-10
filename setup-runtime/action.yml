@@ -1,0 +1,68 @@
+name: Setup Runtime Environment
+description: Prepares the runtime environment for deploying OSSRH artifacts
+inputs:
+  java-version:
+    description: Java version
+    required: false
+    default: "11"
+  java-distribution:
+    description: Java distribution
+    required: false
+    default: zulu
+  java-architecture:
+    description: Java architecture
+    required: false
+    default: x64
+  deployment-server-id:
+    description: Server id of the artifact deployment repository
+    required: false
+  code-signing-private-key:
+    description: Code signing GPG private key
+    required: false
+  code-signing-private-key-passphrase-env-variable:
+    description: Name of the environment variable containing code signing GPG private key passphrase
+    required: false
+    default: CODE_SIGNING_KEY_PASSPHRASE
+  deployment-server-username-env-variable:
+    description: Name of the environment variable containing the deployment repository username
+    required: false
+    default: DEPLOYMENT_SERVER_USERNAME
+  deployment-server-password-env-variable:
+    description: Name of the environment variable containing the deployment repository password
+    required: false
+    default: DEPLOYMENT_SERVER_PASSWORD
+runs:
+  using: composite
+  steps:
+    - name: Set up basic Maven runtime environment
+      if: ${{!inputs.deployment-server-id && !inputs.code-signing-private-key}}
+      uses: actions/setup-java@v3
+      with:
+        java-version: ${{inputs.java-version}}
+        distribution: ${{inputs.java-distribution}}
+        architecture: ${{inputs.java-architecture}}
+        cache: maven
+    - name: Set up Maven with deployment environment
+      if: ${{inputs.deployment-server-id && !inputs.code-signing-private-key}}
+      uses: actions/setup-java@v3
+      with:
+        java-version: ${{inputs.java-version}}
+        distribution: ${{inputs.java-distribution}}
+        architecture: ${{inputs.java-architecture}}
+        cache: maven
+        server-id: ${{inputs.deployment-server-id}}
+        server-username: ${{inputs.deployment-server-username-env-variable}}
+        server-password: ${{inputs.deployment-server-password-env-variable}}
+    - name: Set up Maven with code signing deployment environment
+      if: ${{inputs.deployment-server-id && inputs.code-signing-private-key}}
+      uses: actions/setup-java@v3
+      with:
+        java-version: ${{inputs.java-version}}
+        distribution: ${{inputs.java-distribution}}
+        architecture: ${{inputs.java-architecture}}
+        cache: maven
+        gpg-private-key: ${{inputs.code-signing-private-key}}
+        gpg-passphrase: ${{inputs.code-signing-private-key-passphrase-env-variable}}
+        server-id: ${{inputs.deployment-server-id}}
+        server-username: ${{inputs.deployment-server-username-env-variable}}
+        server-password: ${{inputs.deployment-server-password-env-variable}}

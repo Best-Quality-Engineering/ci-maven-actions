@@ -1,0 +1,28 @@
+name: Increment POM
+description: Executes the ci:increment-pom goal
+inputs:
+  profiles:
+    description: Comma separated list of profiles to activate
+    required: false
+    default: ""
+  revision:
+    description: The maven ci-friendly revision property to use
+    required: true
+  sha1:
+    description: The maven ci-friendly sha1 property to use
+    required: false
+    default: ""
+  changelist:
+    description: The maven ci-friendly changelist property to use
+    required: false
+    default: "-SNAPSHOT"
+  incrementor:
+    description: The revision incrementing strategy
+    required: false
+    default: auto
+runs:
+  using: composite
+  steps:
+    - name: Execute ci:increment-pom goal
+      shell: bash
+      run: ${{github.action_path}}/../scripts/ci-maven.sh -p "${{inputs.profiles}}" -g ci:increment-pom -r "${{inputs.revision}}" -s "${{inputs.sha1}}" -c "${{inputs.changelist}}" -i "${{inputs.incrementor}}"
