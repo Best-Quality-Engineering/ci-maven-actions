@@ -4,7 +4,6 @@ inputs:
   profiles:
     description: Comma separated list of profiles to activate
     required: false
-    default: ""
   sha1:
     description: The maven ci-friendly sha1 property to use
     required: false
@@ -12,10 +11,14 @@ inputs:
   changelist:
     description: The maven ci-friendly changelist property to use
     required: false
-    default: -SNAPSHOT
+    default: "undefined"
 runs:
   using: composite
   steps:
     - name: Execute install
-      shell: bash
-      run: ${{github.action_path}}/../scripts/ci-maven.sh -p "${{inputs.profiles}}" -g install -s "${{inputs.sha1}}" -c "${{inputs.changelist}}"
+      uses: Best-Quality-Engineering/ci-maven-action@v1
+      with:
+        profiles: ${{inputs.profiles}}
+        sha1: ${{inputs.sha1}}
+        changelist: ${{inputs.changelist}}
+        phases: clean, install

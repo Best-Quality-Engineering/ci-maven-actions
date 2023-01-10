@@ -14,4 +14,7 @@ runs:
   steps:
     - name: Configure local git user
       shell: bash
-      run: ${{github.action_path}}/../scripts/git-user.sh -n "${{inputs.name}}" -e "${{inputs.email}}"
+      run: |
+        echo "Configuring git user details"
+        git config --local user.name ${{inputs.name}}
+        git config --local user.email ${{inputs.email}}

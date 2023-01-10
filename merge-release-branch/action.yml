@@ -16,4 +16,21 @@ runs:
   steps:
     - name: Merge Release Branch
       shell: bash
-      run: ${{github.action_path}}/../scripts/merge-release-branch.sh -v "${{inputs.version}}" -r "${{inputs.release-branch}}" -b "${{inputs.base-branch}}"
+      run: |
+        echo "Committing tracked changes to ${{inputs.release-branch}}"
+        git add -u
+        git commit -m "Release ${{inputs.version}}"
+        echo "Pushing ${{inputs.release-branch}} to origin"
+        git push -u origin "${{inputs.release-branch}}"
+
+        echo "Merging ${{inputs.release-branch}} to ${{inputs.base-branch}}"
+        git fetch
+        git checkout "${{inputs.base-branch}}"
+        git pull origin "${{inputs.base-branch}}"
+        git merge "${{inputs.release-branch}}"
+
+        echo "Pushing ${{inputs.base-branch}} to origin"
+        git push -u origin "${{inputs.base-branch}}"
+
+        echo "Deleting ${{inputs.release-branch}} from origin"
+        git push origin --delete "${{inputs.release-branch}}"

@@ -4,7 +4,6 @@ inputs:
   profiles:
     description: Comma separated list of profiles to activate
     required: false
-    default: ""
   revision:
     description: The maven ci-friendly revision property to use
     required: true
@@ -20,5 +19,10 @@ runs:
   using: composite
   steps:
     - name: Execute ci:replace-content goal
-      shell: bash
-      run: ${{github.action_path}}/../scripts/ci-maven.sh -p "${{inputs.profiles}}" -g ci:replace-content -r "${{inputs.revision}}" -s "${{inputs.sha1}}" -c "${{inputs.changelist}}"
+      uses: Best-Quality-Engineering/ci-maven-action@v1
+      with:
+        profiles: ${{inputs.profiles}}
+        revision: ${{inputs.revision}}
+        sha1: ${{inputs.sha1}}
+        changelist: ${{inputs.changelist}}
+        goals: ci:replace-content

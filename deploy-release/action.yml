@@ -4,7 +4,6 @@ inputs:
   profiles:
     description: Comma separated list of profiles to activate
     required: false
-    default: ""
   revision:
     description: The version to release
     required: true
@@ -20,5 +19,10 @@ runs:
   using: composite
   steps:
     - name: Deploy Release Artifacts
-      shell: bash
-      run: ${{github.action_path}}/../scripts/ci-maven.sh -p "${{inputs.profiles}}" -g deploy -r "${{inputs.revision}}" -s "${{inputs.sha1}}" -c "${{inputs.changelist}}"
+      uses: Best-Quality-Engineering/ci-maven-action@v1
+      with:
+        profiles: ${{inputs.profiles}}
+        revision: ${{inputs.revision}}
+        sha1: ${{inputs.sha1}}
+        changelist: ${{inputs.changelist}}
+        phases: clean, deploy
